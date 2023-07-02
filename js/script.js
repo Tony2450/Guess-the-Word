@@ -43,9 +43,9 @@ const clearMessage = function () {
 const wordHider = function(word){
     let wordArray = word.split('');
     wordArray.forEach( function(item, index, array){
-        wordArray[index] = "●";
+        array[index] = "●";
     });
-    let hiddenWord = wordArray.join(' ');
+    let hiddenWord = wordArray.join('');
     wordInProgress.innerText = hiddenWord;
 };
 
@@ -85,6 +85,43 @@ const makeGuess = function(letter){
         message.innerText = "You've already guessed that letter! Try another one!";
     } else {
         guessedLettersArray.push(letter);
+        showLetters();
+        updater(guessedLettersArray);
     };
     console.log(guessedLettersArray);
-}
+};
+
+//Function to update page with guessed letters
+const showLetters = function(){
+    guessedLetters.innerHTML = "";
+    guessedLettersArray.forEach(function(item,index,array){
+        const listItem = document.createElement("li");
+        listItem.innerText = array[index];
+        guessedLetters.append(listItem);
+    })
+};
+
+// Function to update word in progress
+const updater = function(guessedLettersArray){
+    const wordUpper = word.toUpperCase();
+    let wordArray = wordUpper.split("");
+    wordArray.forEach(function(item,index,array){
+        if (guessedLettersArray.includes(array[index]) === true){
+            array[index] = item;
+        } else {
+            array[index] = "●"
+        }
+    });
+    let hiddenWord = wordArray.join('')
+    wordInProgress.innerText = hiddenWord;
+    console.log(hiddenWord);
+    winCheck(hiddenWord);
+};
+
+// Function to check if player successfully guessed word
+const winCheck = function(hiddenWord){
+    if (hiddenWord === word.toUpperCase()){
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed the entire word correctly! Congrats!</p>`
+    }
+};
